@@ -1,0 +1,426 @@
+/* style2025-booklet.css - Optimized for Booklet Print Output */
+
+/* === Font Imports === */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Playfair+Display:wght@400..900&display=swap');
+
+@layer base {
+    /* === Color Variables (Print Focus) === */
+    :root {
+        /* Enhanced Contrast Colors */
+        --text-primary-print: #0A0A0A;  /* Increased contrast */
+        --text-secondary-print: #3A3A3A; /* Slightly lighter grey for secondary text */
+        --surface-primary-print: #FFFFFF;
+        --surface-secondary-print: #F8F8F8; /* Better for subtle shading */
+        --border-color: #DDDDDD;       /* Added border color variable */
+
+        /* Booklet Spacing System */
+        --spacing-unit-print: 0.6cm;   /* Increased base spacing */
+        --radius-base-print: 0.25cm;
+
+        /* Remove screen-specific variables */
+        /* --gradient-noble: ... */
+        /* --gradient-gold: ... */
+        /* --glass-bg: ... */
+        /* --focus-ring: ... */
+    }
+
+    /* === Base Styles === */
+    html {
+        font-family: 'Manrope', sans-serif; /* Added sans-serif fallback */
+        font-size: 13pt; /* Slightly larger base size */
+        line-height: 1.6; /* Improved readability */
+        color: var(--text-primary-print);
+        background: var(--surface-primary-print); /* Ensure white background */
+        -webkit-print-color-adjust: exact; /* Try to preserve colors (use cautiously, often better to rely on print-specific colors) */
+        color-adjust: exact;
+        scroll-behavior: auto; /* Disable smooth scroll for print */
+
+        /* Hyphenation by language */
+        hyphens: auto;
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        /* Reminder: Set lang attribute in HTML <html lang="en"> */
+    }
+
+    body {
+        margin: 0; /* Margins handled by @page */
+        padding: 0; /* Padding handled by @page */
+        min-height: auto; /* Remove screen-specific height */
+        line-height: inherit; /* Inherit line height from html */
+        background: var(--surface-primary-print); /* Ensure white background */
+        transition: none; /* Remove transition */
+    }
+
+    /* === Typography === */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Playfair Display', serif; /* Added serif fallback */
+        font-weight: 700; /* Use a clear weight for headings */
+        letter-spacing: normal; /* Adjust letter spacing for print readability */
+        color: var(--text-primary-print);
+        /* Improved Heading Rhythm */
+        margin-block-start: 2em;
+        margin-block-end: 0.75em;
+        break-after: avoid; /* Avoid breaking page directly after a heading */
+        page-break-after: avoid; /* Older browser support */
+    }
+
+    h1 { font-size: 24pt; }
+    h2 { font-size: 18pt; }
+    h3 { font-size: 14pt; }
+    h4 { font-size: 12pt; }
+    h5 { font-size: 10pt; }
+    h6 { font-size: 9pt; }
+
+    p {
+        margin-block-end: 1em; /* Add space after paragraphs */
+        /* Justified text (optional - uncomment if desired) */
+        /* text-align: justify; */
+    }
+
+    /* Ensure links are readable in print */
+    a {
+        color: var(--text-primary-print); /* Use primary text color */
+        text-decoration: underline; /* Explicitly underline links */
+    }
+    a:visited {
+         color: var(--text-secondary-print); /* Slightly different color for visited links */
+    }
+    /* Enhanced Link Handling - Optionally show URL for links in print */
+    a::after {
+        content: " <" attr(href) "> "; /* More readable URL display */
+        font-size: 0.85em; /* Relative to parent font size */
+        color: var(--text-secondary-print); /* Use secondary color for URL */
+        word-break: break-word; /* Better URL breaking */
+        hyphens: auto; /* Allow hyphenation within the URL */
+    }
+
+    /* Avoid widows/orphans across all text elements (universal fallback) */
+    * {
+        orphans: 2;
+        widows: 2;
+    }
+
+    /* Accessibility: Focus States - Remove for print */
+    *:focus-visible { outline: none; box-shadow: none; }
+
+    /* Reduced Motion - Remove for print */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+    /* Dark Theme - Remove for print */
+    @media (prefers-color-scheme: dark) {
+        :root { /* Remove dark mode styles */ }
+    }
+}
+
+@layer utilities {
+    /* === Spacing System (Print Adapted) === */
+    .padding-x { padding-inline: var(--spacing-unit-print); } /* Use logical property */
+    .padding-y { padding-block: var(--spacing-unit-print); } /* Use logical property */
+
+    /* Responsive breakpoints less relevant for fixed print size, but can be used for internal layout */
+    @media (min-width: 640px) {
+        .sm\:padding-x { padding-inline: calc(var(--spacing-unit-print) * 1.5); } /* Use logical property */
+        .sm\:padding-y { padding-block: calc(var(--spacing-unit-print) * 1.5); } /* Use logical property */
+    }
+    /* Keep other breakpoints if needed for internal layout within a page */
+    @media (min-width: 768px) {
+        .md\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1024px) {
+        .lg\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+    }
+
+
+    /* === Layout Utilities === */
+    .flex-center { display: flex; align-items: center; justify-content: center; }
+    /* Booklet Grid System */
+    .grid-auto-fit {
+        display: grid;
+        /* Adapt minmax values for print context */
+        grid-template-columns: repeat(auto-fit, minmax(7cm, 1fr)); /* Wider min width to 7cm */
+        gap: calc(var(--spacing-unit-print) * 0.75); /* Adjusted gap */
+        /* Avoid breaking grid layout across pages */
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    /* === Typography Scale (Print Adapted) === */
+    .text-step-0 { font-size: 12pt; }
+    .text-step-1 { font-size: 14pt; }
+    .text-step-2 { font-size: 16pt; }
+
+    /* === Form Elements (Hide in Print) === */
+    .input-field, .input-field:focus { display: none; }
+    .input-error { display: none; }
+    .error-message { display: none; }
+
+    /* === Loading States (Hide in Print) === */
+    .spinner { display: none; }
+    /* Removed unused @keyframes spin */
+
+    /* === Modal Transitions (Hide in Print) === */
+    .modal-enter { display: none; }
+    .modal-enter-active { display: none; }
+
+    /* === Tooltip System (Hide in Print) === */
+    [data-tooltip] { cursor: auto; }
+    [data-tooltip]:hover::after { display: none; }
+
+     /* === Responsive Tables (Adapt for Print) === */
+    .responsive-table {
+        overflow-x: visible; /* Prevent scrollbars in print */
+        -webkit-overflow-scrolling: auto;
+        width: 100%; /* Ensure table takes full width */
+        margin-block-end: var(--spacing-unit-print); /* Add space after table */
+    }
+
+    /* === Print-Specific Break Utilities === */
+    .break-before-page { break-before: page; }
+    .break-after-page { break-after: page; }
+    .avoid-break-inside { break-inside: avoid; }
+    /* Improved Break Control */
+    .chapter-start {
+        break-before: recto; /* Start on right page */
+    }
+}
+
+@layer components {
+    /* === Enhanced Card Component (Adapt for Print) === */
+    .card {
+        background: var(--surface-primary-print);
+        border: 1.5pt solid var(--border-color); /* Increased border thickness */
+        border-radius: var(--radius-base-print);
+        padding: calc(var(--spacing-unit-print) * 1.2); /* Increased padding */
+        box-shadow: none; /* Remove box shadow in print */
+        transition: none; /* Remove transition */
+        margin-block-end: var(--spacing-unit-print); /* Use logical property */
+        break-inside: avoid; /* Avoid breaking a page within a card */
+    }
+
+    .card:hover {
+        transform: none; /* Remove hover effect */
+    }
+
+    /* === Navigation (Hide in Print) === */
+    .nav-link { display: none; }
+    .nav-link[aria-current="page"] { display: none; }
+
+    /* === Dark Mode Toggle (Hide in Print) === */
+    .theme-switcher { display: none; }
+
+    /* === Elements to explicitly hide in print === */
+    .no-print,
+    [aria-hidden="true"], /* Hide elements explicitly marked as hidden */
+    .script-only, /* Hide elements only needed for scripting */
+    .interactive-only /* Hide elements only for interactive use */
+     {
+        display: none !important;
+    }
+
+    /* === Figure and Image Handling === */
+    figure {
+        break-inside: avoid; /* Avoid breaking figures across pages */
+        margin: 1em auto; /* Center figures with margin */
+    }
+    figcaption {
+        font-size: 10pt;
+        text-align: center;
+        margin-top: 0.5em;
+        color: var(--text-secondary-print);
+    }
+}
+
+/* === Breakpoint System (Less relevant for print, kept for potential internal layout) === */
+/* @media rules moved into @layer utilities for better organization */
+
+
+/* === Print Styles === */
+@media print {
+    /* === Booklet Page Setup === */
+    @page {
+        size: A4 landscape; /* Essential for booklet layout */
+        margin: 1.5cm 2cm; /* Larger inner gutter for binding */
+        marks: crop cross; /* Add crop marks */
+        prince-shrink-to-fit: auto; /* PrinceXML compatibility */
+    }
+
+    /* Booklet Spread Setup */
+    @page :left {
+        margin-right: 3cm; /* Binding gutter on left pages */
+        margin-left: 1.5cm; /* Outer margin on left pages */
+    }
+
+    @page :right {
+        margin-left: 3cm; /* Binding gutter on right pages */
+        margin-right: 1.5cm; /* Outer margin on right pages */
+    }
+
+    /* === Global Print Overrides === */
+    html, body {
+        background: white;
+        color: black;
+        font-size: 13pt; /* Match base font size */
+        line-height: 1.6; /* Match base line height */
+    }
+
+    /* Ensure all text is black and backgrounds are white */
+    * {
+        color: black !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    /* Re-apply background for specific elements if needed (e.g., a light grey box) */
+    .card {
+         background: var(--surface-primary-print) !important; /* Explicitly set card background */
+         border-color: var(--border-color) !important; /* Ensure border color is correct */
+    }
+
+    /* === Element Hiding === */
+    .no-print,
+    nav, /* Hide navigation */
+    form, /* Hide forms */
+    button, /* Hide buttons */
+    input, /* Hide inputs */
+    textarea, /* Hide textareas */
+    .theme-switcher, /* Hide theme switcher */
+    .spinner, /* Hide spinner */
+    [aria-hidden="true"], /* Hide elements explicitly marked as hidden */
+    .script-only, /* Hide elements only needed for scripting */
+    .interactive-only /* Hide elements only for interactive use */
+     {
+        display: none !important;
+    }
+
+    /* === Image Handling === */
+    img {
+        max-width: 100%;
+        max-height: 18cm; /* Prevent oversized images */
+        display: block;
+        margin: 0 auto; /* Center images */
+        break-inside: avoid; /* Avoid breaking images across pages */
+        page-break-inside: avoid; /* Older property for compatibility */
+        transform: scale(1); /* Reset any scaling */
+    }
+
+    /* === Text Flow Control === */
+    p, ul, ol, blockquote {
+        break-inside: avoid; /* Avoid breaking paragraphs, lists, blockquotes */
+        orphans: 2; /* Prevent single lines at the bottom of a page */
+        widows: 2; /* Prevent single lines at the top of a page */
+        hyphens: auto; /* Enable hyphenation */
+    }
+
+     h1, h2, h3, h4, h5, h6 {
+        break-after: avoid; /* Avoid breaking after headings */
+        page-break-after: avoid; /* Older browser support */
+    }
+
+    /* === Table Styling === */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-block-end: 1em; /* Use logical property */
+        font-size: inherit; /* Ensure consistent font size */
+    }
+    th, td {
+        border: 1px solid #cccccc;
+        padding: 0.5em;
+        text-align: left;
+        font-size: inherit; /* Ensure consistent font size */
+        line-height: 1.4; /* Add better line spacing */
+    }
+    thead {
+        display: table-header-group; /* Repeat table headers on each page */
+    }
+    /* Zebra striping for table rows */
+    tr:nth-child(even) {
+        background-color: var(--surface-secondary-print) !important; /* Ensure override */
+    }
+    /* Allow table rows to split only if content is long */
+    tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    /* === Spacing === */
+    /* Add space at the end of elements to prevent content merging */
+    p, ul, ol, table, .card {
+        margin-block-end: var(--spacing-unit-print); /* Use logical property */
+    }
+
+    /* === Print-Specific Break Utilities (Ensure !important in print media) === */
+    .break-before-page { break-before: page !important; }
+    .break-after-page { break-after: page !important; }
+    .avoid-break-inside { break-inside: avoid !important; }
+    .chapter-start { break-before: recto !important; } /* Ensure override */
+
+    /* === Advanced Page Numbering === */
+    @page {
+        @bottom-center {
+            content: counter(page);
+            font-family: 'Manrope', sans-serif;
+            font-size: 10pt;
+        }
+         /* Optional: Add top center content */
+        /*
+        @top-center {
+            content: "Booklet Title";
+            font-size: 10pt;
+            font-style: italic;
+            font-family: 'Manrope', sans-serif;
+        }
+        */
+    }
+
+    /* === Booklet Specific Enhancements === */
+    /* Force full-page elements to stay together */
+    .full-page {
+        height: calc(297mm - 3cm); /* A4 height minus margins (assuming 1.5cm top/bottom) */
+        break-inside: avoid;
+    }
+
+    /* Front Matter Styles */
+    .front-matter {
+        page: frontmatter;
+        prince-page-group: start;
+    }
+
+    @page frontmatter {
+        @top-center { content: "Preliminary Materials"; }
+        /* Remove page number from front matter */
+        @bottom-center { content: normal; }
+    }
+
+    /* Chapter Opening Pages */
+    .chapter-opener {
+        break-before: recto;
+        page: chapter;
+    }
+
+    @page chapter {
+        @top-center { content: string(chapter-title); } /* Assumes chapter title is set via CSS string-set */
+         /* Optional: Remove page number on chapter opening pages */
+        @bottom-center { content: normal; }
+    }
+}
+
+/* === Booklet Specific Enhancements (Outside @media print for some properties) === */
+/* Properties that might influence layout before print */
+.full-page {
+    break-inside: avoid; /* Keep outside @media print as well */
+}
+.front-matter {
+    prince-page-group: start; /* Keep outside @media print for PrinceXML */
+}
+.chapter-opener {
+    break-before: recto; /* Keep outside @media print as well */
+}
+
